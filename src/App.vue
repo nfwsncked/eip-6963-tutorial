@@ -17,6 +17,7 @@ import DemoView from './components/DemoView.vue'
       <p class="text-gray-500">
         This demo is your interactive guide to request and select a crypto wallet provider, and then access the details of the selected provider. Let's dive in to understand how the <a href="https://eips.ethereum.org/EIPS/eip-6963" target="_blank"><strong>EIP-6963</strong></a> protocol works.
       </p>
+      <p class="text-gray-500 text-xl">You can find this guide and all the related code on <a href="https://github.com/nfwsncked/eip-6963-tutorial" target="_blank"><strong class="text-sky-500">GitHub</strong></a></p>
       <main>
         <DemoView />
       </main>
