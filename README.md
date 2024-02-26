@@ -143,15 +143,21 @@ export interface EIP1193Provider {
 **EIP6963ProviderInfo** which exposes metadata about the wallet extension;
 **EIP1193Provider** which is a provider interface from the [EIP-1193 specification](https://eips.ethereum.org/EIPS/eip-1193#appendix-i-consumer-facing-api-documentation). This should be used in the same way as the window.ethereum provider.
 
-
 With these elements set up, we're now ready to start building a basic implementation of EIP-6963 communication:
 
 ```typescript
-export class InjectedWalletProvider {
+export class InjectedWalletProvider extends EventEmitter {
   // This will hold the details of the providers received
   providerDetails: EIP6963ProviderDetail[];
 
   ...
+
+  // This method processes the provider details announced and adds them to the providerDetails array
+  private providerReceived(providerDetail: EIP6963ProviderDetail): void {
+    this.providerDetails.push(providerDetail);
+    this.emit('providerDetailsUpdated')
+    this.log(`updated wallet provider details from '${providerDetail.info.name}' extension`);
+  }
 
   // This method listens for the 'announceProvider' event and processes the provider details announced
   subscribe(): void {
@@ -160,12 +166,6 @@ export class InjectedWalletProvider {
         this.providerReceived(event.detail);
       }
     );
-  }
-
-  // This method processes the provider details announced and adds them to the providerDetails array
-  private providerReceived(providerDetail: EIP6963ProviderDetail): void {
-    this.providerDetails.push(providerDetail);
-    this.log(`updated wallet provider details from '${providerDetail.info.name}' extension`);
   }
   
   // This method is used to request wallet providers by firing a 'EIP6963RequestProviderEvent'
@@ -190,6 +190,24 @@ We are particularly interested in **detail** parameter of the **'EIP6963Provider
 
 The first one, **info**, holds all the metadata that the extension shares with the DApp. We have previously defined its interface as — **EIP6963ProviderInfo**:
 
+Let's go one by one over the data points we received (descriptions were taken from [EIP-6963 specification](https://eips.ethereum.org/EIPS/eip-6963#specification)):
+
+> **uuid** — a globally unique identifier the Wallet Provider that MUST be (UUIDv4 compliant) to uniquely distinguish different EIP-1193 provider sessions that have matching properties defined below during the lifetime of the page. The cryptographic uniqueness provided by UUIDv4 guarantees that two independent EIP6963ProviderInfo objects can be separately identified.
+
+**Important:** Please note that the 'uuid' will alter with each announcement, thus it cannot be reliably used to consistently identify the wallet extension.
+
+> **name** — a human-readable local alias of the Wallet Provider to be displayed to the user on the DApp.
+
+> **icon** — a URI pointing to an image. The image SHOULD be a square with 96x96px minimum resolution. See the Images/Icons below for further requirements of this property.The icon string MUST be a data URI as defined in RFC-2397. The image SHOULD be a square with 96x96px minimum resolution. The image format is RECOMMENDED to be either lossless or vector based such as PNG, WebP or SVG to make the image easy to render on the DApp. Since SVG images can execute Javascript, applications and libraries MUST render SVG images using the <img> tag to ensure no untrusted Javascript execution can occur.
+
+
+> **rdns** — the Wallet MUST supply the rdns property which is intended to be a domain name from the Domain Name System in reverse syntax ordering such as com.example.subdomain. It’s up to the Wallet to determine the domain name they wish to use, but it’s generally expected the identifier will remain the same throughout the development of the Wallet. It’s also worth noting that similar to a user agent string in browsers, there are times where the supplied value could be unknown, invalid, incorrect, or attempt to imitate a different Wallet. Therefore, the DApp SHOULD be able to handle these failure cases with minimal degradation to the functionality of the DApp. **The rdns (Reverse-DNS) property serves to provide an identifier which DApps can rely on to be stable between sessions.** The Reverse Domain Name Notation is chosen to prevent namespace collisions. The Reverse-DNS convention implies that the value should start with a reversed DNS domain name controlled by the Provider. 
+
+**Important:** RDNS serves as a consistent parameter that enables us to identify the wallet across different sessions, we will use that later for persistency.
+
+
+Example values:
+
 ```json
 {
     "uuid": "36072975-ed89-4a55-a0d0-e7523f1413a8",
@@ -206,21 +224,6 @@ The first one, **info**, holds all the metadata that the extension shares with t
     "rdns": "io.metamask"
 }
 ```
-
-Let's go one by one over the data points we received (descriptions were taken from [EIP-6963 specification](https://eips.ethereum.org/EIPS/eip-6963#specification)):
-
-> **uuid** — a globally unique identifier the Wallet Provider that MUST be (UUIDv4 compliant) to uniquely distinguish different EIP-1193 provider sessions that have matching properties defined below during the lifetime of the page. The cryptographic uniqueness provided by UUIDv4 guarantees that two independent EIP6963ProviderInfo objects can be separately identified.
-
-**Important:** Please note that the 'uuid' will alter with each announcement, thus it cannot be reliably used to consistently identify the wallet extension.
-
-> **name** — a human-readable local alias of the Wallet Provider to be displayed to the user on the DApp.
-
-> **icon** — a URI pointing to an image. The image SHOULD be a square with 96x96px minimum resolution. See the Images/Icons below for further requirements of this property.The icon string MUST be a data URI as defined in RFC-2397. The image SHOULD be a square with 96x96px minimum resolution. The image format is RECOMMENDED to be either lossless or vector based such as PNG, WebP or SVG to make the image easy to render on the DApp. Since SVG images can execute Javascript, applications and libraries MUST render SVG images using the <img> tag to ensure no untrusted Javascript execution can occur.
-
-
-> **rdns** — the Wallet MUST supply the rdns property which is intended to be a domain name from the Domain Name System in reverse syntax ordering such as com.example.subdomain. It’s up to the Wallet to determine the domain name they wish to use, but it’s generally expected the identifier will remain the same throughout the development of the Wallet. It’s also worth noting that similar to a user agent string in browsers, there are times where the supplied value could be unknown, invalid, incorrect, or attempt to imitate a different Wallet. Therefore, the DApp SHOULD be able to handle these failure cases with minimal degradation to the functionality of the DApp. **The rdns (Reverse-DNS) property serves to provide an identifier which DApps can rely on to be stable between sessions.** The Reverse Domain Name Notation is chosen to prevent namespace collisions. The Reverse-DNS convention implies that the value should start with a reversed DNS domain name controlled by the Provider. 
-
-**Important:** RDNS serves as a consistent parameter that enables us to identify the wallet across different sessions, we will use that later for persistency.
 
 
 ### EIP6963AnnounceProviderEvent.detail.provider

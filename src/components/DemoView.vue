@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, watchEffect } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { Button } from '@/components/shadcn/ui/button'
 import { type EIP6963ProviderDetail } from '../injected-wallet-provider/provider-events';
 import { InjectedWalletProvider } from '../injected-wallet-provider/injected-wallet-provider';
 
 // Define our custom Injected Wallet Provider
 const injectedWalletProvider = new InjectedWalletProvider();
-
-const localStorageName = 'demoAppDefaultWalletProviderRdns';
 
 const availableProviders = ref<EIP6963ProviderDetail[]>([]);
 const selectedProviderDetail = ref<EIP6963ProviderDetail | null>(null);
@@ -44,28 +42,21 @@ function selectProvider(wallet: EIP6963ProviderDetail) {
   selectedProviderDetail.value = wallet;
 }
 
-function saveSelectedProviderAsDefault() {
-  if (!selectedProviderDetail.value) {
-    return
-  }
-  defaultProviderRdns.value = selectedProviderDetail.value.info.rdns
-  window.localStorage.setItem(localStorageName, selectedProviderDetail.value.info.rdns)
-  console.log(`default wallet provider was saved into localStorage: '${selectedProviderDetail.value.info.rdns}'`)
+function saveProviderAsDefault(providerDetail: EIP6963ProviderDetail) {
+  defaultProviderRdns.value = providerDetail.info.rdns;
+  injectedWalletProvider.storeDefaultProviderRdns(providerDetail.info.rdns);
 }
 
 function readDefaultProviderRdns() {
-  const storedProviderRdns = window.localStorage.getItem(localStorageName)
-  if (!storedProviderRdns) {
-    return
-  }
-  defaultProviderRdns.value = storedProviderRdns
+  const storedProviderRdns = injectedWalletProvider.readDefaultProviderRdns();
+  defaultProviderRdns.value = storedProviderRdns;
   return storedProviderRdns
 }
 
 function removeDefaultProvider() {
-  window.localStorage.removeItem(localStorageName)
-  defaultProviderRdns.value = null
-  console.log('default wallet provider was removed from localStorage')
+  injectedWalletProvider.removeDefaultProvider();
+  defaultProviderRdns.value = null;
+  console.log('default wallet provider was removed from localStorage');
 }
 
 async function isAccountConnected() {
@@ -208,7 +199,7 @@ async function sendTransactionWithSelectedProvider() {
       <p class="text-gray-500">Press 'Store' to save your chosen provider's RDNS value into localStorage. After refreshing
         the page, the DApp will use this value to automatically select your preferred wallet.</p>
       <div v-if="selectedProviderDetail">
-        <Button v-if="selectedProviderDetail.info.rdns != defaultProviderRdns" @click="saveSelectedProviderAsDefault()"
+        <Button v-if="selectedProviderDetail.info.rdns != defaultProviderRdns" @click="saveProviderAsDefault(selectedProviderDetail)"
           class="save-provider-button">Store {{ selectedProviderDetail.info.name }} as default</Button>
         <Button v-else @click="removeDefaultProvider()" class="remove-provider-button">Remove {{
           selectedProviderDetail.info.name }} as default</Button>

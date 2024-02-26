@@ -2,6 +2,7 @@ import type { EIP6963ProviderDetail, EIP6963AnnounceProviderEvent } from "./prov
 import { EIP6963RequestProviderEvent } from "./provider-events";
 import { EventEmitter } from "eventemitter3";
 
+const defaultProviderLocalStorageName = 'dAppDefaultWalletProviderRdns';
 
 // This class extends EventEmitter to be able to emit events and give our DApp an interface to subscribe to
 export class InjectedWalletProvider extends EventEmitter {
@@ -17,6 +18,13 @@ export class InjectedWalletProvider extends EventEmitter {
     console.log(`InjectedWalletProvider: ${log}`);
   }
 
+  // This method processes the provider details announced and adds them to the providerDetails array
+  private providerReceived(providerDetail: EIP6963ProviderDetail): void {
+    this.providerDetails.push(providerDetail);
+    this.emit('providerDetailsUpdated')
+    this.log(`updated wallet provider details from '${providerDetail.info.name}' extension`);
+  }
+
   // This method listens for the 'announceProvider' event and processes the provider details announced
   subscribe(): void {
     window.addEventListener("eip6963:announceProvider", (event: EIP6963AnnounceProviderEvent) => {
@@ -25,18 +33,30 @@ export class InjectedWalletProvider extends EventEmitter {
       }
     );
   }
-
-  // This method processes the provider details announced and adds them to the providerDetails array
-  private providerReceived(providerDetail: EIP6963ProviderDetail): void {
-    this.providerDetails.push(providerDetail);
-    this.log(`updated wallet provider details from '${providerDetail.info.name}' extension`);
-    this.emit('providerDetailsUpdated')
-  }
   
   // This method is used to request wallet providers by firing a 'EIP6963RequestProviderEvent'
   requestProviders(): void {
     this.log("emitting 'requestProvider' event");
     this.providerDetails = [];
     window.dispatchEvent(new EIP6963RequestProviderEvent());
+  }
+
+  // This function stores the default provider.info.rdns in the local storage
+  storeDefaultProviderRdns(providerRdns: string) {
+    window.localStorage.setItem(defaultProviderLocalStorageName, providerRdns);
+    this.log(`stored default provider rdns '${providerRdns}' in local storage.`);
+  }
+
+  // This function retrieves the default provider.info.rdns from the local storage
+  readDefaultProviderRdns(): string | null {
+    const providerRdns = window.localStorage.getItem(defaultProviderLocalStorageName);
+    this.log(`read default provider rdns '${providerRdns}' from local storage.`);
+    return providerRdns;
+  }
+
+  // This function removes the default provider.info.rdns from the local storage
+  removeDefaultProvider() {
+    window.localStorage.removeItem(defaultProviderLocalStorageName);
+    this.log("removed default provider rdns from local storage");
   }
 }
