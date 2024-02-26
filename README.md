@@ -48,7 +48,7 @@ You can practice using an account to sign messages and send transactions in step
 
 > Some code snippets provided in this guide have been intentionally simplified to make the tutorial easy to grasp. For a fully functional and integrated solution, please refer to the application code.
 
-## Section 0: Cloning and running the interactive tutorial app
+## 📖 Section 0: Cloning and running the interactive tutorial app
 
 #### Clone the repository
 
@@ -78,7 +78,7 @@ http://localhost:5173/
 ```
 
 
-## Section 1: Connection Flow
+## 📖 Section 1: Connection Flow
 
 Simplicity is the key to adoption. 
 
@@ -184,27 +184,27 @@ Finally, we can see our events in the console:
 
 ![001-events-in-console.png](docs/001-events-in-console.png)
 
-We are particularly interested in **detail** parameter of the **'EIP6963ProviderDetail'**. It has two children: **info** and **provider**.
+Let's dive into the **detail** parameter of the **'EIP6963ProviderDetail'**. It has two parts: **info** and **provider**.
 
-### EIP6963AnnounceProviderEvent.detail.info
+### 📍 EIP6963ProviderDetail.info
 
-The first one, **info**, holds all the metadata that the extension shares with the DApp. We have previously defined its interface as — **EIP6963ProviderInfo**:
+First up, **info**. This is where the extension shares all its metadata with the DApp. We've already defined its interface as — **EIP6963ProviderInfo**.
 
-Let's go one by one over the data points we received (descriptions were taken from [EIP-6963 specification](https://eips.ethereum.org/EIPS/eip-6963#specification)):
+Let's break down the data points we received (find full descriptions here: [EIP-6963 specification](https://eips.ethereum.org/EIPS/eip-6963#specification)):
 
-> **uuid** — a globally unique identifier the Wallet Provider that MUST be (UUIDv4 compliant) to uniquely distinguish different EIP-1193 provider sessions that have matching properties defined below during the lifetime of the page. The cryptographic uniqueness provided by UUIDv4 guarantees that two independent EIP6963ProviderInfo objects can be separately identified.
+**uuid** — a unique identifier for each wallet provider announcement, allowing different EIP-1193 provider sessions to be distinguished
 
-**Important:** Please note that the 'uuid' will alter with each announcement, thus it cannot be reliably used to consistently identify the wallet extension.
+> ❗ Keep in mind that **uuid** changes with each announcement, so it's not a reliable way to consistently identify the wallet extension!
 
-> **name** — a human-readable local alias of the Wallet Provider to be displayed to the user on the DApp.
+**name** — a user-friendly name of the Wallet Provider that can be displayed to the user on the DApp
 
-> **icon** — a URI pointing to an image. The image SHOULD be a square with 96x96px minimum resolution. See the Images/Icons below for further requirements of this property.The icon string MUST be a data URI as defined in RFC-2397. The image SHOULD be a square with 96x96px minimum resolution. The image format is RECOMMENDED to be either lossless or vector based such as PNG, WebP or SVG to make the image easy to render on the DApp. Since SVG images can execute Javascript, applications and libraries MUST render SVG images using the <img> tag to ensure no untrusted Javascript execution can occur.
+**icon** — an encoded image that represents the wallet provider's logo
 
+> ❗ For security reasons you should always wrap received **icon** into <img> tag
 
-> **rdns** — the Wallet MUST supply the rdns property which is intended to be a domain name from the Domain Name System in reverse syntax ordering such as com.example.subdomain. It’s up to the Wallet to determine the domain name they wish to use, but it’s generally expected the identifier will remain the same throughout the development of the Wallet. It’s also worth noting that similar to a user agent string in browsers, there are times where the supplied value could be unknown, invalid, incorrect, or attempt to imitate a different Wallet. Therefore, the DApp SHOULD be able to handle these failure cases with minimal degradation to the functionality of the DApp. **The rdns (Reverse-DNS) property serves to provide an identifier which DApps can rely on to be stable between sessions.** The Reverse Domain Name Notation is chosen to prevent namespace collisions. The Reverse-DNS convention implies that the value should start with a reversed DNS domain name controlled by the Provider. 
+**rdns** — a unique identifier provided by the wallet in the form of a reversed domain name (like com.example.subdomain). It's expected to stay the same throughout the wallet's lifespan, providing a stable identifier for DApps to rely on across sessions. 
 
-**Important:** RDNS serves as a consistent parameter that enables us to identify the wallet across different sessions, we will use that later for persistency.
-
+> ❗ **rdns** is a consistent parameter that helps us identify the wallet across different sessions. We'll use that later for persistency.
 
 Example values:
 
@@ -226,11 +226,13 @@ Example values:
 ```
 
 
-### EIP6963AnnounceProviderEvent.detail.provider
+### 📍 EIP6963ProviderDetail.provider
 
-The second parameter, **provider**, is an interface we previously defined as **EIP1193Provider**. It functions as an exposed account provider, which you can utilize similarly to how you would use **window.ethereum**.
+The second part of the **'EIP6963ProviderDetail'** is the **provider**. This is an interface, known as **EIP1193Provider**, that acts like a gateway to the user's account. You can use it in the same way you'd use **window.ethereum**.
 
-EIP1193Provider is an interface that represents the Ethereum provider API. It is a standard interface for Ethereum wallets that allows them to communicate with DApps. The EIP1193Provider interface has a method that is mostly used, 'request', which takes a request object as a parameter. The request object should have a 'method' property, which is a string representing the name of the method to be called, and an optional 'params' property, which can be an array or an object containing the parameters to be passed to the method. The 'request' method returns a Promise that resolves to the result of the method call. This allows DApps to interact with the Ethereum blockchain in an asynchronous manner, without blocking the user interface.
+The **EIP1193Provider** interface is a standard way for Ethereum wallets to talk to DApps. It's main usage is the `request` method, this method takes a request object as a parameter: object should have a `method` property (a string that names the method to be called) and it can also have a `params` property (this can be an array or an object, and it holds the parameters for the method call). The `request` method gives back a Promise that resolves to the result of the method call. This lets DApps interact with the Ethereum blockchain in a way that doesn't block the user interface.
+
+Example calls you usually make:
 
 ```typescript
 await provider.request({method: 'eth_accounts'})
@@ -239,7 +241,7 @@ await provider.request({method: 'personal_sign', params: ['some message to sign'
 
 ```
 
-## Section 2: Persistence Handling
+## 📖 Section 2: Persistence Handling
 
 ### eth_requestAccounts
 
@@ -290,7 +292,7 @@ function saveSelectedProviderAsDefault(selectedProviderInfo: EIP6963ProviderInfo
 }
 ```
 
-## Section 3: Message Signing and Sending a Transaction
+## 📖 Section 3: Message Signing and Sending a Transaction
 
 This section shows how DApps can utilize connected wallet providers to sign transactions securely.
 
