@@ -153,19 +153,18 @@ async function sendTransaction(providerDetail: EIP6963ProviderDetail) {
 
 <template>
   <div class="space-y-8">
-    <div class="space-y-2"><!-- Part 1: Request available providers -->
-      <h2 class="text-2xl font-extrabold">Step 1: Request available providers</h2>
-      <p class="text-gray-500">Click the button below to emit a <code
-          class="text-sky-800">'eip6963:requestProvider'</code> event. This will request the list of available wallet
-        providers.</p>
-      <Button @click="injectedWalletProvider.requestProviders()" class="emit-button">Emit eip6963:requestProvider</Button>
+    <div class="space-y-4"><!-- Part 1: Request available providers -->
+      <h2 class="text-2xl font-extrabold">Step 1: Request Available Providers</h2>
+      <p class="text-gray-500">When you click the button below, the <a href="https://eips.ethereum.org/EIPS/eip-6963" target="_blank"><strong>EIP-6963</strong></a> magic begins. This button triggers <code class="text-sky-800 text-s">InjectedWalletProvider.requestProviders</code>.</p>
+      <p class="text-gray-500">It sends out an <code class="text-sky-800 text-s">eip6963:requestProvider</code> event. All <a href="https://eips.ethereum.org/EIPS/eip-6963" target="_blank"><strong>EIP-6963</strong></a> compatible wallet extensions in your browser will hear this call and respond with an <code class="text-sky-800 text-s">eip6963:announceProvider</code> event. Each of these events carries the details of a wallet provider. This way, your DApp gets to know all the available wallet providers in the user's browser.</p>
+      <Button @click="injectedWalletProvider.requestProviders()" class="emit-button">Request Providers</Button>
     </div>
-    <div class="space-y-2"><!-- Part 2: Display available providers -->
-      <h2 class="text-2xl font-extrabold">Step 2: Select a provider</h2>
-      <p class="text-gray-500">Here are the wallet providers that responded to the request. Click 'Select' to choose a
-        provider.</p>
-      <p class="text-gray-500"></p>
-      <div v-for="provider in availableProviderDetails" :key="provider.info.name"
+    <div class="space-y-4"><!-- Part 2: Display available providers -->
+      <h2 class="text-2xl font-extrabold">Step 2: Select a Provider</h2>
+      <p class="text-gray-500">Before the introduction of <a href="https://eips.ethereum.org/EIPS/eip-6963" target="_blank"><strong>EIP-6963</strong></a>, regardless of the number of wallets installed in your browser, only one could be active on a page at a time, occupying the <code class="text-sky-800 text-s">window.ethereum</code> space. This limitation meant that during page load, a race condition would occur, and the last wallet to load would take up this space. Developers had no control over this process. However, the advent of <a href="https://eips.ethereum.org/EIPS/eip-6963" target="_blank"><strong>EIP-6963</strong></a> has dramatically changed this scenario.</p>
+      <p class="text-gray-500">Now you can use as many providers as you may need.</p>
+      <p class="text-gray-500">Here are the wallet providers that responded to the request. Click <strong>'Select'</strong> to choose a provider:</p>
+      <div v-if="availableProviderDetails.length" v-for="provider in availableProviderDetails" :key="provider.info.name"
         class="flex items-center space-x-4 rtl:space-x-reverse  max-w-xs bg-gray-100 px-4 py-2">
         <div class="flex-shrink-0">
           <img class="w-8 h-8 rounded-full" :src="provider.info.icon" alt="Provider image">
@@ -183,12 +182,12 @@ async function sendTransaction(providerDetail: EIP6963ProviderDetail) {
           <Button @click="selectProvider(provider)" class="select-button" variant="secondary">Select</Button>
         </div>
       </div>
+      <div v-else>No providers available yet</div>
     </div>
 
-    <div class="space-y-2"><!-- Part 3: Display selected provider -->
-      <h2 class="text-2xl font-extrabold">Step 3: Access selected provider info</h2>
-      <p class="text-gray-500">Here are the details of the selected provider. These are contents of <code
-          class="text-sky-800">'EIP6963AnnounceProviderEvent.detail.info'</code></p>
+    <div class="space-y-4"><!-- Part 3: Display selected provider -->
+      <h2 class="text-2xl font-extrabold">Step 3: Get to Know Your Provider Metadata</h2>
+      <p class="text-gray-500">Let's take a look at the details of the provider you've selected. These details are found in the <code class="text-sky-800 text-s">'EIP6963AnnounceProviderEvent.detail.info'</code>.</p>
       <div v-if="selectedProviderDetail" class="bg-green-50 flex items-center space-x-4 rtl:space-x-reverse px-4 py-4">
         <div class="flex-shrink-0">
           <img class="w-8 h-8 rounded-full" :src="selectedProviderDetail.info.icon" alt="selectedProviderDetail image">
@@ -214,43 +213,38 @@ async function sendTransaction(providerDetail: EIP6963ProviderDetail) {
         <p>No provider selected</p>
       </div>
     </div>
-    <div class="space-y-2"><!-- Part 4: Save selected wallet as default using localStorage -->
-      <h2 class="text-2xl font-extrabold">Step 4: Save selected wallet as default</h2>
-      <p class="text-gray-500">Press 'Store' to save your chosen provider's RDNS value into localStorage. After refreshing
-        the page, the DApp will use this value to automatically select your preferred wallet.</p>
+    <div class="space-y-4"><!-- Part 4: Save selected wallet as default using localStorage -->
+      <h2 class="text-2xl font-extrabold">Step 4: Make Your Wallet the Default Choice</h2>
+      <p class="text-gray-500">Imagine you have a favorite wallet extension that you want to use every time you interact with this DApp. With <a href="https://eips.ethereum.org/EIPS/eip-6963" target="_blank"><strong>EIP-6963</strong></a> you finally can make this happen!</p>
+      <p class="text-gray-500">Clicking <strong>'Store'</strong> will call <code class="text-sky-800 text-s">storeDefaultProviderRdns</code> on <code class="text-sky-800 text-s">InjectedWalletProvider</code> that will save the unique <code class="text-sky-800 text-s">info.rdns</code> value of your chosen provider into <strong>localStorage</strong>. So, the next time you refresh the page, the DApp will be able to read <strong>localStorage</strong> and automatically select your preferred wallet.</p>
       <div v-if="selectedProviderDetail">
         <Button v-if="selectedProviderDetail.info.rdns != defaultProviderRdns"
-          @click="setDefaultProvider(selectedProviderDetail)" class="save-provider-button">Store {{
-            selectedProviderDetail.info.name }} as default</Button>
-        <Button v-else @click="removeDefaultProvider()" class="remove-provider-button">Remove {{
-          selectedProviderDetail.info.name }} as default</Button>
+          @click="setDefaultProvider(selectedProviderDetail)" class="save-provider-button">Set {{
+            selectedProviderDetail.info.name }} as Default</Button>
+        <Button v-else @click="removeDefaultProvider()" class="remove-provider-button">Unset {{
+          selectedProviderDetail.info.name }} as Default</Button>
       </div>
       <div v-else>
-        No provider selected
+        No wallet selected yet
       </div>
     </div>
-    <div class="space-y-2"><!-- Part 5: Connected wallet account -->
-      <h2 class="text-2xl font-extrabold">Step 5: Connected Wallet Account</h2>
-      <p class="text-gray-500"><code class="text-sky-800">'EIP6963AnnounceProviderEvent.detail.provider'</code> can be
-        used to send <code class="text-sky-800">'eth_requestAccounts'</code> and get the address of the connected wallet
-        account:
-      </p>
+    <div class="space-y-4"><!-- Part 5: Connected wallet account -->
+      <h2 class="text-2xl font-extrabold">Step 5: Connect to Your Wallet Account</h2>
+      <p class="text-gray-500">Once you've chosen a provider, the next step is to link up with the accounts in your wallet extension. To do this, we'll use <code class="text-sky-800 text-s">provider.request</code> to send a <code class="text-sky-800 text-s">'eth_requestAccounts'</code> command. This will connect your DApp to your wallet extension for the first time.</p>
+      <p class="text-gray-500">If you refresh the page or come back later, your DApp will still have access to the accounts you've already connected. So, all you'll need to do is call <code class="text-sky-800 text-s">eth_accounts</code> to retrieve them in the background.</p>
       <div v-if="selectedProviderDetail">
-        <div v-if="!currentAccountAddress" class="bg-pink-50 flex items-center space-x-4 rtl:space-x-reverse px-4 py-4">
+        <div v-if="!currentAccountAddress" class="bg-pink-50 flex items-center space-x-4 rtl:space-x-reverse px-4 py-4 mb-4">
           <div class="flex-1 min-w-0">
             <p class="text-sm text-gray-500 truncate dark:text-gray-400">
               account[0]: Not Available
             </p>
           </div>
         </div>
-        <div v-else class="bg-green-50 flex items-center space-x-4 rtl:space-x-reverse px-4 py-4">
+        <div v-else class="bg-green-50 flex items-center space-x-4 rtl:space-x-reverse px-4 py-4 mb-4">
           <p class="text-sm text-gray-500 truncate dark:text-gray-400">
             account[0]: {{ currentAccountAddress }}
           </p>
         </div>
-        <p class="text-gray-500">Remember, if you've already connected an account with the same provider, you won't need
-          to
-          do it again after refreshing the page. The wallet extension keeps track of all connected accounts.</p>
         <Button @click="connectWalletAccount(selectedProviderDetail)" class="connect-button"
           :disabled="!selectedProviderDetail || (selectedProviderDetail && currentAccountAddress)">Request
           accounts</Button>
@@ -259,20 +253,21 @@ async function sendTransaction(providerDetail: EIP6963ProviderDetail) {
         No provider selected
       </div>
     </div>
-    <div class="space-y-2"><!-- Part 6: Sign a message -->
-      <h2 class="text-2xl font-extrabold">Step 6: Sign a message</h2>
-      <p class="text-gray-500">Here <code class="text-sky-800">'EIP6963AnnouncePrasasdoviderEvent.detail.provider'</code>
-        is used to sign a message using the connected wallet account:</p>
+    <div class="space-y-4"><!-- Part 6: Sign a message -->
+      <h2 class="text-2xl font-extrabold">Step 6: Sign a Message</h2>
+      <p class="text-gray-500">In this step, you'll use the selected provider to sign a message.</p>
+      <p class="text-gray-500">With the help of <a href="https://eips.ethereum.org/EIPS/eip-6963" target="_blank"><a href="https://eips.ethereum.org/EIPS/eip-6963" target="_blank"><strong>EIP-6963</strong></a></a>, you can choose which wallet to use to sign whatever you need to.</p>
+      <p class="text-gray-500">Give it a try! Sign a message, then choose another wallet provider and repeat the process. You'll notice that messages in the log are being signed by different wallets.</p>
       <div v-if="selectedProviderDetail && currentAccountAddress">
         <div class="bg-green-50 flex items-center space-x-4 rtl:space-x-reverse px-4 py-4">
           <div class="flex-1 min-w-0">
-            <label for="signature-text" class="block text-sm font-medium text-gray-700">Message to sign:</label>
+            <label for="signature-text" class="block text-sm font-medium text-gray-700">String to sign:</label>
             <div class="mt-1">
               <input v-model="signatureInputText" type="text" placeholder="some string to sign"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-4" />
             </div>
             <Button @click="signMessage(selectedProviderDetail)" class="sign-button"
-              :disabled="!selectedProviderDetail || !signatureInputText">Sign Message</Button>
+              :disabled="!selectedProviderDetail || !signatureInputText">Sign String</Button>
           </div>
         </div>
         <div class="bg-green-50 flex flex-col items-start space-y-4 px-4 py-4">
@@ -287,10 +282,9 @@ async function sendTransaction(providerDetail: EIP6963ProviderDetail) {
         No account available yet
       </div>
     </div>
-    <div class="space-y-2"><!-- Part 7: Send a transaction -->
-      <h2 class="text-2xl font-extrabold">Step 7: Send a transaction</h2>
-      <p class="text-gray-500">Here <code class="text-sky-800">'EIP6963AnnounceProviderEvent.detail.provider'</code> is
-        used to send a transaction using the connected wallet account:</p>
+    <div class="space-y-4"><!-- Part 7: Send a transaction -->
+      <h2 class="text-2xl font-extrabold">Step 7: Send a Transaction</h2>
+      <p class="text-gray-500">And now, for the grand finale! Let's send a transaction. It's just as easy as everything else we've done:</p>
       <div v-if="selectedProviderDetail && currentAccountAddress">
         <div class="bg-green-50 flex items-center space-x-4 rtl:space-x-reverse px-4 py-4">
           <div class="flex-1 min-w-0">
@@ -313,4 +307,18 @@ async function sendTransaction(providerDetail: EIP6963ProviderDetail) {
         No account available yet
       </div>
     </div>
-  </div></template>
+    <div class="space-y-4"><!-- Part 7: Send a transaction -->
+      <h2 class="text-2xl font-extrabold">Thanks for joining the exploration!</h2>
+      <div class="bg-cyan-50 flex items-center space-x-4 rtl:space-x-reverse px-4 py-4">
+      <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+        Connect with me on socials:
+      </p>
+      <div class="flex space-x-4">
+        <a href="https://warpcast.com/nfwsncked" target="_blank" class="text-sky-700 hover:text-red-700">Farcaster</a>
+        <a href="https://discord.com/users/nfwsncked" target="_blank" class="text-sky-700 hover:text-red-700">Discord</a>
+        <a href="https://twitter.com/nfwsncked" target="_blank" class="text-sky-700 hover:text-red-700">Twitter</a>
+      </div>
+      </div>
+    </div>
+  </div>
+  </template>

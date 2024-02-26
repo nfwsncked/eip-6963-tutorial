@@ -1,13 +1,25 @@
-# Interactive EIP-6963 Tutorial
+# Interactive [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) Tutorial
 ## Overview
 
-This tutorial will guide you in transforming the Web3 user experience by contributing to the development of [EIP-6963: Multi Injected Provider Discovery](https://eips.ethereum.org/EIPS/eip-6963). This Ethereum Improvement Proposal (EIP) is designed to boost connectivity in the blockchain space by offering an alternative discovery mechanism to `window.ethereum`. By enabling the discovery of multiple injected wallet providers, [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) not only simplifies wallet interactions for developers, but also gives them more control over their DApps. For end-users, it enhances the user experience by allowing them to use any installed wallet of their choice, thus facilitating seamless communication between decentralized applications (DApps) and browser extension wallets.
+This tutorial will guide you in transforming the Web3 user experience by contributing to the development of [EIP-6963: Multi Injected Provider Discovery](https://eips.ethereum.org/EIPS/eip-6963). This Ethereum Improvement Proposal (EIP) is designed to boost connectivity in the blockchain space by offering an alternative discovery mechanism to `window.ethereum`. 
+
+By enabling the discovery of multiple injected wallet providers, [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) not only simplifies wallet interactions for developers, but also gives them more control over their decentralized applications (DApps). 
+
+For end-users, it enhances the user experience by allowing them to use any installed wallet of their choice, thus facilitating seamless communication between DApps and browser extension wallets.
+
+---
 
 ## Objective
 
-The primary goal of this tutorial is to speed up the adoption of [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) among DApp developers and the broader blockchain community. It aims to make the integration of wallet providers into the decentralized ecosystem not only more intuitive but also more reliable. This guide serves as a comprehensive resource, equipping you with the knowledge and tools to implement [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) within your DApp in just 15 minutes. For developers, this means less time spent on understanding the complexities of wallet provider integration and more time dedicated to creating remarkable DApps. For engineering managers, this tutorial serves as a clear and concise resource to share with your team, ensuring everyone understands the concept and speeding up the development process. By working together, it's possible to enhance the blockchain space, making it more accessible and efficient for everyone.
+The primary goal of this tutorial is to speed up the adoption of [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) among DApp developers and the broader blockchain community. It aims to make the integration of wallet providers into the decentralized ecosystem not only more intuitive but also more reliable. This guide serves as a comprehensive resource, equipping you with the knowledge and tools to implement [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) within your DApp in just 15 minutes. 
 
-## Quickest Start
+For developers, this means less time spent on understanding the complexities of wallet provider integration and more time dedicated to creating remarkable DApps. 
+
+By working together, it's possible to enhance the blockchain space, making it more accessible and efficient for everyone.
+
+---
+
+## Quick Start
 
 Get your hands on a ready-to-use **InjectedWalletProvider** setup right away. Simply add this file into your project, and you'll be all set to connect your DApp with [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) in a moment:
 
@@ -20,7 +32,7 @@ Get your hands on a ready-to-use **InjectedWalletProvider** setup right away. Si
 
 Later in this tutorial, we'll construct this implementation step by step to give you a comprehensive understanding of its internal mechanics.
 
-## 
+---
 
 ## The Roadmap
 
@@ -46,9 +58,52 @@ This part will demonstrate how your DApp can utilize connected wallet providers 
 
 You can practice using an account to sign messages and send transactions in steps 6-7 of the [interactive tutorial](https://eip-6963-tutorial.pages.dev/).
 
-> Some code snippets provided in this guide have been intentionally simplified to make the tutorial easy to grasp. For a fully functional and integrated solution, please refer to the application code.
+---
 
-## 📖 Section 0: Cloning and running the interactive tutorial app
+This tutorial will reference three key files from the repository:
+
+**// 📁 file:  [injected-wallet-provider.ts](src/injected-wallet-provider/injected-wallet-provider.ts)** — the core logic for the [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) implementation resides
+
+**// 📁 file:  [provider-events.ts](src/injected-wallet-provider/provider-events.ts)** — additional classes and interfaces that are essential for the InjectedWalletProvider to function
+
+**// 📁 file:  [DemoView.vue](src/components/DemoView.vue)** — the demo page of the tutorial, it uses the InjectedWalletProvider to showcase how [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) operates
+
+---
+
+## Try It Out!
+
+Ready to dive in? The interactive playground is all set up for you to try out everything you've learned in this guide. It's the perfect place to experience how [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) operates in a real-world setting.
+
+Just pop over to the [interactive playground](https://eip-6963-tutorial.pages.dev/) and let the exploration begin. It's a practical way to grasp how today's DApps can connect to a wallet using [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963).
+
+This guide is all about learning by doing. Let's walk through the steps you'll be taking in the [interactive tutorial](https://eip-6963-tutorial.pages.dev/) or on your local machine:
+
+### Steps 1-3: Connection Flow
+
+In these steps, you'll learn about the 'requestProvider' and 'announceProvider' events and how they work. You'll gain a clear understanding of how DApps can initiate connections with multiple injected wallet providers. You'll also see examples of these and related interfaces that are crucial for communicating with the wallets.
+
+### Steps 4-5: Persistence Handling
+
+These steps will show you how the browser keeps a connection with the wallet alive even after a page refresh. You'll also learn how to store a preferred wallet provider into localStorage for reuse after the page is refreshed. This is what makes [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) so special for your DApp users: now they have the freedom to connect with their preferred wallet, instead of being limited to the wallet available in `window.ethereum`.
+
+### Steps 6-7: Message Signing and Sending a Transaction
+
+In these final steps, you'll see how your DApp can utilize connected wallet providers to sign transactions using their preferred wallet.
+
+---
+
+## 📖 Section 0: Getting things ready
+
+To get the most out of this tutorial, you'll need at least one [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) compatible wallet. But hey, remember what this EIP is about? Get two or three!
+
+Here's a list of wallets that have already rolled out support for [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963):
+
+- [Metamask](https://metamask.io/download/)
+- [Zerion](https://zerion.io/download)
+- [Coinbase](www.coinbase.com/en-de/wallet/download)
+- [Brave](https://brave.com/wallet/)
+
+... and so many more are available [here](https://github.com/WalletConnect/EIP6963/blob/master/src/utils/constants.ts).
 
 #### Clone the repository
 
@@ -77,6 +132,7 @@ npm run dev
 http://localhost:5173/
 ```
 
+---
 
 ## 📖 Section 1: Connection Flow
 
@@ -84,13 +140,13 @@ Simplicity is the key to adoption.
 
 The [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) protocol works in a pretty straightforward way: 
 
-A DApp can fire the **'requestProvider'** event at any moment, and as a reaction, every [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) compatible wallet extension in your browser instantly firest **'announceProvider'** event in response.
+A DApp can fire the `requestProvider` event at any moment, and as a reaction, every [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) compatible wallet extension in your browser instantly fires `announceProvider` event in response.
 
-To see this interaction in action, let's add an event listener for **'eip6963:announceProvider'** and initiate the **'eip6963:requestProvider'** event.
+To see this interaction in action, let's add an event listener for `announceProvider` and emit the `requestProvider` event.
 
 First let's define all the necessary classes and interfaces in one go:
 
-**// 📁 file:  provider-events.ts**
+**// 📁 file:  [provider-events.ts](src/injected-wallet-provider/provider-events.ts)**
 ```typescript
 // Declare a global interface to extend the WindowEventMap with a custom event "eip6963:announceProvider"
 declare global {
@@ -136,17 +192,26 @@ export interface EIP1193Provider {
   }
 ```
 
-- The global interface **WindowEventMap** declaration above is used to extend the existing **WindowEventMap** interface with a new event type, **'eip6963:announceProvider'**.
-- **EIP6963RequestProviderEvent** — an event class that's used to request the wallet providers. It's created by firing the **'eip6963:requestProvider'** event.
-- **EIP6963AnnounceProviderEvent** — an interface that represents the response from the wallet extension when the **'eip6963:requestProvider'** event is fired.
+---
+
+The global interface **WindowEventMap** declaration above is used to extend the existing **WindowEventMap** interface with a new event type, **'eip6963:announceProvider'**.
+
+**EIP6963RequestProviderEvent** — an event class that's being fired to request the wallet providers;
+
+**EIP6963AnnounceProviderEvent** — an interface that represents the response from the wallet extension when the **'eip6963:requestProvider'** event is fired;
 
 **EIP6963ProviderDetail** is the main object we're interested in here. It contains two important properties:
+
+
 **EIP6963ProviderInfo** which exposes metadata about the wallet extension;
+
 **EIP1193Provider** which is a provider interface from the [EIP-1193 specification](https://eips.ethereum.org/EIPS/eip-1193#appendix-i-consumer-facing-api-documentation). This should be used in the same way as the window.ethereum provider.
 
-With these elements set up, we're now ready to start building a basic implementation of EIP-6963 communication:
+---
 
-**// 📁 file:  injected-wallet-provider.ts**
+Now that we've got all the pieces in place, let's kick off the construction of a simple [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) communication setup:
+
+**// 📁 file:  [injected-wallet-provider.ts](src/injected-wallet-provider/injected-wallet-provider.ts)**
 ```typescript
 export class InjectedWalletProvider extends EventEmitter {
   // This will hold the details of the providers received
@@ -179,7 +244,7 @@ export class InjectedWalletProvider extends EventEmitter {
 }
 ```
 
-First we have to call `listenToAnnouncedProviders` that will set up an event listener for `eip6963:announceProvider` event.
+First we have to call `subscribe` that will set up an event listener for `eip6963:announceProvider` event.
 Next step is calling `requestProviders` to emit our request event.
 
 Finally, we can see our events in the console:
@@ -251,9 +316,9 @@ Once the DApp requests access to the accounts, they stay connected. This means y
 
 ### 🔐 eth_requestAccounts
 
-To can establish a connection with the accounts in the wallet extension, we should simply call **'eth_requestAccounts'**:
+To establish a connection with the accounts in the wallet extension, we should simply call **'eth_requestAccounts'**:
 
-**// 📁 file:  DemoView.vue**
+**// 📁 file:  [DemoView.vue](src/components/DemoView.vue)**
 ```typescript
 async function connectWalletAccount(providerDetail: EIP6963ProviderDetail) {
   try {
@@ -279,7 +344,7 @@ Which means our DApp successfully got the ethereum account from the extension
 
 To get accounts previously connected via `eth_requestAccounts`, we should use method **'eth_accounts'**:
 
-**// 📁 file:  DemoView.vue**
+**// 📁 file:  [DemoView.vue](src/components/DemoView.vue)**
 ```typescript
 async function getConnectedWalletAccount(providerDetail: EIP6963ProviderDetail) {
   const accounts = await providerDetail.provider.request({ method: 'eth_accounts' })
@@ -293,7 +358,7 @@ async function getConnectedWalletAccount(providerDetail: EIP6963ProviderDetail) 
 
 Thanks to [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963), it's now possible to use multiple wallet extensions at the same time. This opens up a scenario where you might want to stick with the same wallet extension every time you use this DApp. To make this happen, we can save your choice in localStorage using the RDNS value of the chosen extension. Just a quick reminder, the RDNS parameter is a unique identifier that each wallet extension provides.
 
-**// 📁 file:  injected-wallet-provider.ts**
+**// 📁 file:  [injected-wallet-provider.ts](src/injected-wallet-provider/injected-wallet-provider.ts)**
 ```typescript
   // This function stores the default provider.info.rdns in the local storage
   storeDefaultProviderRdns(providerRdns: string) {
@@ -322,25 +387,41 @@ In this part of the guide, you'll learn how modern DApps can leverage connected 
 Let's start with an example of signing a string with the selected wallet:
 
 ```typescript
-async function signWithSelectedProvider(msg: string, currentAccountAddress: string, selectedProviderInfo: EIP6963ProviderInfo) {
-  const signature = await provider.request({method: 'personal_sign', params: [msg, currentAccountAddress]});
-  console.log(`signed '${signatureInputText.value}' with ${selectedProviderInfo.name}, signature: ${signature}`);
+// signs a message by requesting the 'personal_sign' method from the provider
+async function signMessage(providerDetail: EIP6963ProviderDetail) {
+  try {
+    const msg = signatureInputText.value;
+    const signature = await providerDetail.provider.request({ method: 'personal_sign', params: [msg, currentAccountAddress.value] });
+    const signatureLog = `signed '${signatureInputText.value}' with ${providerDetail.info.name}, signature: ${signature}`;
+    console.log(signatureLog);
+    signatures.value.push(signatureLog);
+  } catch (error) {
+    console.error(`error signing: ${error}`);
+  }
 }
 ```
 
 Now we can utilize **'eth_sendTransaction'** to send a transaction into the network:
 
 ```typescript
-async function sendTransactionWithSelectedProvider(txToAddress: string, currentAccountAddress: string, value: string) {
-  const transactionParameters = {
-      to: txToAddress,
-      from: currentAccountAddress,
+// sends a transaction by requesting the 'eth_sendTransaction' method from the provider
+async function sendTransaction(providerDetail: EIP6963ProviderDetail) {
+  // this is a demo implementation to avoid excesive dependencies
+  // for production-ready apps you should use ethers / web3.js or bn.js to properly work with BigNumbers
+  const value = `0x${parseInt(txValue.value).toString(16)}`;
+  try {
+    const transactionParameters = {
+      to: txToAddress.value,
+      from: currentAccountAddress.value,
       value: value,
     };
-    const txHash = await provider.request({
+    const txHash = await providerDetail.provider.request({
       method: 'eth_sendTransaction',
       params: [transactionParameters],
     });
     console.log(`transaction sent with hash: ${txHash}`);
+  } catch (error) {
+    console.error(`error sending transaction: ${error}`);
+  }
 }
 ```

@@ -42,7 +42,7 @@ export class InjectedWalletProvider extends EventEmitter {
   }
 
   // This function stores the default provider.info.rdns in the local storage
-  storeDefaultProviderRdns(providerRdns: string) {
+  storeDefaultProviderRdns(providerRdns: string): void {
     window.localStorage.setItem(defaultProviderLocalStorageName, providerRdns);
     this.log(`stored default provider rdns '${providerRdns}' in local storage.`);
   }
@@ -55,7 +55,7 @@ export class InjectedWalletProvider extends EventEmitter {
   }
 
   // This function removes the default provider.info.rdns from the local storage
-  removeDefaultProvider() {
+  removeDefaultProvider(): void {
     window.localStorage.removeItem(defaultProviderLocalStorageName);
     this.log("removed default provider rdns from local storage");
   }
