@@ -90,6 +90,7 @@ To see this interaction in action, let's add an event listener for **'eip6963:an
 
 First let's define all the necessary classes and interfaces in one go:
 
+**// 📁 file:  provider-events.ts**
 ```typescript
 // Declare a global interface to extend the WindowEventMap with a custom event "eip6963:announceProvider"
 declare global {
@@ -145,6 +146,7 @@ export interface EIP1193Provider {
 
 With these elements set up, we're now ready to start building a basic implementation of EIP-6963 communication:
 
+**// 📁 file:  injected-wallet-provider.ts**
 ```typescript
 export class InjectedWalletProvider extends EventEmitter {
   // This will hold the details of the providers received
@@ -233,28 +235,37 @@ The second part of the **'EIP6963ProviderDetail'** is the **provider**. This is 
 The **EIP1193Provider** interface is a standard way for Ethereum wallets to talk to DApps. It's main usage is the `request` method, this method takes a request object as a parameter: object should have a `method` property (a string that names the method to be called) and it can also have a `params` property (this can be an array or an object, and it holds the parameters for the method call). The `request` method gives back a Promise that resolves to the result of the method call. This lets DApps interact with the Ethereum blockchain in a way that doesn't block the user interface.
 
 Example calls you usually make:
-
 ```typescript
 await provider.request({method: 'eth_accounts'})
 
 await provider.request({method: 'personal_sign', params: ['some message to sign', '0x0000000000000000000000000000000000000000']});
-
 ```
 
 ## 📖 Section 2: Persistence Handling
 
-### eth_requestAccounts
+When you want to access Ethereum accounts, you can use either `eth_requestAccounts` or `eth_accounts`. 
 
-After obtaining the provider for the wallet of choice, we can establish a connection with the accounts available in the wallet extension, to do so we use **'eth_requestAccounts'**:
+**The difference?** `eth_requestAccounts` prompts the user to connect their wallet via the extension interface, while `eth_accounts` simply returns a list of accounts already connected and available to the DApp.
 
+Once the DApp requests access to the accounts, they stay connected. This means you only need to request access once. The wallet extension takes care of persisting these connections.
+
+### 🔐 eth_requestAccounts
+
+To can establish a connection with the accounts in the wallet extension, we should simply call **'eth_requestAccounts'**:
+
+**// 📁 file:  DemoView.vue**
 ```typescript
-async function getCurrentAccount(): Promise<any> {
-  const accounts = await provider.request({method: 'eth_requestAccounts'})
-  setCurrentAccount(accounts[0])
+async function connectWalletAccount(providerDetail: EIP6963ProviderDetail) {
+  try {
+    const accounts = await providerDetail.provider.request({ method: 'eth_requestAccounts' })
+    setCurrentWalletAccount(accounts[0])
+  } catch (e) {
+    console.error(`error getting account: ${e}`);
+  }
 }
 ```
 
-This will trigger chosen extension to present a dialog to connect to the available account:
+This action will prompt the selected wallet extension provider to display a dialog box, asking for permission to connect to the available account:
 
 ![002-request-accounts.png](docs/002-request-accounts.png)
 
@@ -262,39 +273,51 @@ You will see the following in the console:
 
 `current account has been set to: 0x4adad79b327a627395a5ed54f051b64f42249d3d`
 
-Which means our DApp successfully requested the accounts available in chosen extension.
+Which means our DApp successfully got the ethereum account from the extension
 
-**Important:** This process is being handled and stored within the extension itself, so connection between the DApp and the wallet extension will persist between page reloads and has to be done once per wallet extension.
+### 🔓 eth_accounts
 
-### eth_accounts
+To get accounts previously connected via `eth_requestAccounts`, we should use method **'eth_accounts'**:
 
-To check for accounts that were previously connected to the DApp via chosen extension:
-
+**// 📁 file:  DemoView.vue**
 ```typescript
-async function isAccountConnected() {
-  const accounts = await provider.request({method: 'eth_accounts'})
+async function getConnectedWalletAccount(providerDetail: EIP6963ProviderDetail) {
+  const accounts = await providerDetail.provider.request({ method: 'eth_accounts' })
   if (accounts) {
-    setCurrentAccount(accounts[0])
+    setCurrentWalletAccount(accounts[0])
   }
 }
 ```
 
-Note that method **'eth_accounts'** we're triggering above is used to access to accounts already connected to the DApp before. We can use this method to connect to the available accounts after page refresh.
+### 🗄️ Using localStorage for persistence
 
-### localStorage
+Thanks to [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963), it's now possible to use multiple wallet extensions at the same time. This opens up a scenario where you might want to stick with the same wallet extension every time you use this DApp. To make this happen, we can save your choice in localStorage using the RDNS value of the chosen extension. Just a quick reminder, the RDNS parameter is a unique identifier that each wallet extension provides.
 
-With EIP-6963 we are now able to use multiple wallet extensions simultaneously and this introduces a use-case when the user wants to use same wallet extension every time he uses our DApp. We can persist his choice by using localStorage to save RDNS value of the extension user has chosen. As we already mentioned before, RDNS parameter is a unique identifier provided by each wallet extension.
-
+**// 📁 file:  injected-wallet-provider.ts**
 ```typescript
-function saveSelectedProviderAsDefault(selectedProviderInfo: EIP6963ProviderInfo) {
-  window.localStorage.setItem(localStorageName, selectedProviderInfo.rdns)
-  console.log(`default wallet provider was saved into localStorage: '${selectedProviderInfo.rdns}'`)
-}
+  // This function stores the default provider.info.rdns in the local storage
+  storeDefaultProviderRdns(providerRdns: string) {
+    window.localStorage.setItem(defaultProviderLocalStorageName, providerRdns);
+    this.log(`stored default provider rdns '${providerRdns}' in local storage.`);
+  }
+
+  // This function retrieves the default provider.info.rdns from the local storage
+  readDefaultProviderRdns(): string | null {
+    const providerRdns = window.localStorage.getItem(defaultProviderLocalStorageName);
+    this.log(`read default provider rdns '${providerRdns}' from local storage.`);
+    return providerRdns;
+  }
+
+  // This function removes the default provider.info.rdns from the local storage
+  removeDefaultProvider() {
+    window.localStorage.removeItem(defaultProviderLocalStorageName);
+    this.log("removed default provider rdns from local storage");
+  }
 ```
 
 ## 📖 Section 3: Message Signing and Sending a Transaction
 
-This section shows how DApps can utilize connected wallet providers to sign transactions securely.
+In this part of the guide, you'll learn how modern DApps can leverage connected wallet providers to sign transactions in a secure manner.
 
 Let's start with an example of signing a string with the selected wallet:
 
