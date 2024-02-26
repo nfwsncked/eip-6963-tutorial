@@ -1,11 +1,15 @@
-# Interactive EIP-6963 tutorial
+# Interactive EIP-6963 Tutorial
 ## Overview
 
-This Ethereum Improvement Proposal aims to enhance connectivity in the blockchain space by introducing an alternative discovery mechanism to window.ethereum. By enabling the discovery of multiple injected wallet providers, EIP-6963 facilitates seamless communication between decentralized applications (DApps) and browser extension wallets.
+This tutorial will guide you in transforming the Web3 user experience by contributing to the development of [EIP-6963: Multi Injected Provider Discovery](https://eips.ethereum.org/EIPS/eip-6963). This Ethereum Improvement Proposal (EIP) is designed to boost connectivity in the blockchain space by offering an alternative discovery mechanism to `window.ethereum`. By enabling the discovery of multiple injected wallet providers, [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) not only simplifies wallet interactions for developers, but also gives them more control over their DApps. For end-users, it enhances the user experience by allowing them to use any installed wallet of their choice, thus facilitating seamless communication between decentralized applications (DApps) and browser extension wallets.
 
-## Quicker Start
+## Objective
 
-For the quickest start, you can obtain a ready-to-use **InjectedWalletProvider** implementation. Simply put this file into your project:
+The primary goal of this tutorial is to speed up the adoption of [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) among DApp developers and the broader blockchain community. It aims to make the integration of wallet providers into the decentralized ecosystem not only more intuitive but also more reliable. This guide serves as a comprehensive resource, equipping you with the knowledge and tools to implement [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) within your DApp in just 15 minutes. For developers, this means less time spent on understanding the complexities of wallet provider integration and more time dedicated to creating remarkable DApps. For engineering managers, this tutorial serves as a clear and concise resource to share with your team, ensuring everyone understands the concept and speeding up the development process. By working together, it's possible to enhance the blockchain space, making it more accessible and efficient for everyone.
+
+## Quickest Start
+
+Get your hands on a ready-to-use **InjectedWalletProvider** setup right away. Simply add this file into your project, and you'll be all set to connect your DApp with [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) in a moment:
 
 <details>
 <summary>InjectedWalletProvider</summary>
@@ -14,30 +18,35 @@ For the quickest start, you can obtain a ready-to-use **InjectedWalletProvider**
 
 </details>
 
+Later in this tutorial, we'll construct this implementation step by step to give you a comprehensive understanding of its internal mechanics.
 
-## The Plan
+## 
 
-This tutorial will guide you through implementing **EIP-6963: Multi Injected Provider Discovery** from scratch. It consists of a few comprehensive sections:
+## The Roadmap
+
+This guide will walk you through the process of implementing **[EIP-6963: Multi Injected Provider Discovery](https://eips.ethereum.org/EIPS/eip-6963)** from the ground up. It's broken down into a few easy-to-follow sections:
 
 ### 1. Connection Flow
 
-This section will explain the 'eip6963:requestProvider' and 'eip6963:announceProvider' events. It will provide a detailed explanation on how Decentralized Applications (DApps) can initiate connections with injected wallet providers. Furthermore, it will offer sample implementations of these and related interfaces that are essential for communication with the wallets.
+This part will demystify the 'requestProvider' and 'announceProvider' events and how they work. It will give you a clear understanding of how DApps can kick-start connections with multiple injected wallet providers. Plus, it will share examples of these and related interfaces that are crucial for communicating with the wallets.
 
-The connection flow can be explored in steps 1-3 of the [interactive tutorial](https://eip-6963-tutorial.pages.dev/).
+You can dive into the connection flow in steps 1-3 of the [interactive tutorial](https://eip-6963-tutorial.pages.dev/).
 
 ### 2. Persistence Handling
 
-This section will illustrate how the browser maintains a connection with the wallet even after a page refresh. It will also demonstrate how to save a preferred wallet provider into localStorage for reuse after the page is refreshed.
+This part will show you how the browser keeps a connection with the wallet alive even after a page refresh. It will also guide you on how to store a preferred wallet provider into localStorage for reuse after the page is refreshed. 
 
-The persistence handling can be explored in steps 4-5 of the [interactive tutorial](https://eip-6963-tutorial.pages.dev/).
+This is what makes [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) so special for your DApp users: now they have the freedom to connect with their preferred wallet, instead of being limited to the wallet available in `window.ethereum`.
+
+You can get hands-on with persistence handling in steps 4-5 of the [interactive tutorial](https://eip-6963-tutorial.pages.dev/).
 
 ### 3. Message Signing and Sending a Transaction
 
-Show how your DApp can leverage connected wallet providers to sign transactions using their preferred wallet.
+This part will demonstrate how your DApp can utilize connected wallet providers to sign transactions using their preferred wallet.
 
-Using account to sign messages and send transactions can be explored in steps 6-7 of the [interactive tutorial](https://eip-6963-tutorial.pages.dev/).
+You can practice using an account to sign messages and send transactions in steps 6-7 of the [interactive tutorial](https://eip-6963-tutorial.pages.dev/).
 
-> The code provided in the boxes has been intentionally simplified to keep the tutorial easy to percieve. For a fully working and integrated solution, please look into the application code.
+> Some code snippets provided in this guide have been intentionally simplified to make the tutorial easy to grasp. For a fully functional and integrated solution, please refer to the application code.
 
 ## Section 0: Cloning and running the interactive tutorial app
 
@@ -71,148 +80,107 @@ http://localhost:5173/
 
 ## Section 1: Connection Flow
 
-Simplicity is the key. 
+Simplicity is the key to adoption. 
 
-The EIP-6963 protocol operates in a simple manner: A DApp triggers the **'eip6963:requestProvider'** event, and in response, every EIP-6963 compatible wallet extension in your browser fires off the **'eip6963:announceProvider'** event.
+The [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) protocol works in a pretty straightforward way: 
 
-To observe this interaction, we'll add an event listener for **'eip6963:announceProvider'** and trigger the **'eip6963:requestProvider'** event.
+A DApp can fire the **'requestProvider'** event at any moment, and as a reaction, every [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) compatible wallet extension in your browser instantly firest **'announceProvider'** event in response.
 
-First we define **EIP6963RequestProviderEvent** to emit this event later
+To see this interaction in action, let's add an event listener for **'eip6963:announceProvider'** and initiate the **'eip6963:requestProvider'** event.
 
-```typescript
-class EIP6963RequestProviderEvent extends Event {
-  constructor() {
-    super("eip6963:requestProvider");
-  }
-};
-```
-
-Next, we are required to define the **EIP6963AnnounceProviderEvent** interface, which we will be monitoring.
+First let's define all the necessary classes and interfaces in one go:
 
 ```typescript
-interface EIP6963AnnounceProviderEvent extends Event {
-  type: "eip6963:announceProvider";
-  detail: EIP6963ProviderDetail;
-};
-
-interface EIP6963ProviderDetail {
-  info: EIP6963ProviderInfo;
-  provider: EIP1193Provider;
-};
-
-interface EIP6963ProviderInfo {
-  uuid: string;
-  name: string;
-  icon: string;
-  rdns: string;
-};
-
-interface EIP1193Provider {
-  request(request: { method: string, params?: Array<any> | Record<string, any> }): Promise<any>;
-};
-```
-
-Note that we utilize the **'EIP1193Provider'** interface from the [EIP-1193 specification](https://eips.ethereum.org/EIPS/eip-1193#appendix-i-consumer-facing-api-documentation). This implies that the provider emitted by a wallet extension is fully compatible with the one injected as **'window.ethereum'** before EIP-6963. Consequently, we can utilize all methods and events stated in the [EIP-1193 specification](https://eips.ethereum.org/EIPS/eip-1193#appendix-i-consumer-facing-api-documentation).
-
-In order for Typescript to recognize this custom event, we must augment the **WindowEventMap**:
-
-```typescript
-declare global {
-  interface WindowEventMap {
-    "eip6963:announceProvider": EIP6963AnnounceProviderEvent;
-  }
-}
-```
-
-Now we add **'EIP6963AnnounceProviderEvent'** event listener and emit **'EIP6963RequestProviderEvent'**
-
-```typescript
-onMounted(()  => {
-  listenToAnnouncedProviders();
-  requestProviders();
-})
-
-function listenToAnnouncedProviders() {
-  window.addEventListener('eip6963:announceProvider', (event: EIP6963AnnounceProviderEvent) => {
-    console.log(event.detail);
-  });  
-}
-
-function requestProviders() {
-  window.dispatchEvent(new EIP6963RequestProviderEvent());
-}
-```
-
-So our final code would look like that:
-
-```typescript
-import {onMounted} from 'vue'
-
+// Declare a global interface to extend the WindowEventMap with a custom event "eip6963:announceProvider"
 declare global {
   interface WindowEventMap {
     "eip6963:announceProvider": EIP6963AnnounceProviderEvent;
   }
 }
 
-class EIP6963RequestProviderEvent extends Event {
+// Define a class for the "eip6963:requestProvider" event
+export class EIP6963RequestProviderEvent extends Event {
   constructor() {
     super("eip6963:requestProvider");
   }
-};
+}
 
-interface EIP6963AnnounceProviderEvent extends Event {
+// Define an interface for the "eip6963:announceProvider" event
+export interface EIP6963AnnounceProviderEvent extends Event {
   type: "eip6963:announceProvider";
   detail: EIP6963ProviderDetail;
-};
+}
 
-interface EIP6963ProviderDetail {
+// Define an interface for the provider details
+export interface EIP6963ProviderDetail {
   info: EIP6963ProviderInfo;
   provider: EIP1193Provider;
-};
-
-interface EIP6963ProviderInfo {
-  uuid: string;
-  name: string;
-  icon: string;
-  rdns: string;
-};
-
-interface EIP1193Provider {
-  request(request: { method: string, params?: Array<any> | Record<string, any> }): Promise<any>;
-};
-
-const allProviderDetails = ref<EIP6963ProviderDetail[]>([]);
-const selectedProviderDetail = ref<EIP6963ProviderDetail | null>(null);
-
-const defaultProviderRdns = ref<string | null>(null);
-
-
-onMounted(() => {
-  readDefaultProviderRdns();
-  listenToAnnouncedProviders();
-  requestProviders();
-})
-
-function listenToAnnouncedProviders() {
-  window.addEventListener('eip6963:announceProvider', (event: EIP6963AnnounceProviderEvent) => {
-    console.log(`received 'eip6963:announceProvider' event: ${JSON.stringify(event.detail.info)}`);
-    processAnnouncedProviderDetail(event.detail);
-  });
 }
 
-function requestProviders() {
-  console.log("emitting 'eip6963:requestProvider' event")
-  allProviderDetails.value = [];
-  window.dispatchEvent(new EIP6963RequestProviderEvent());
+// Define an interface for the wallet extension metadata
+export interface EIP6963ProviderInfo {
+  uuid: string; // Unique identifier of the wallet extension announcement, keep in mind it changes on every request-announcement cycle
+  name: string; // Name of the wallet extension
+  icon: string; // Icon for the wallet extension
+  rdns: string; // Reverse DNS name of the wallet extension
 }
 
-function processAnnouncedProviderDetail(providerDetail: EIP6963ProviderDetail) {
-  allProviderDetails.value.push(providerDetail);
-  console.log(`added '${providerDetail.info.name}' to allWalletProviders`)
+// Define an interface for the EIP1193 provider.
+// It's the same interface we are used to access with 'window.ethereum'
+export interface EIP1193Provider {
+    request(request: {
+      method: string;
+      params?: Array<any> | Record<string, any>;
+    }): Promise<any>;
+  }
+```
+
+- The global interface **WindowEventMap** declaration above is used to extend the existing **WindowEventMap** interface with a new event type, **'eip6963:announceProvider'**.
+- **EIP6963RequestProviderEvent** — an event class that's used to request the wallet providers. It's created by firing the **'eip6963:requestProvider'** event.
+- **EIP6963AnnounceProviderEvent** — an interface that represents the response from the wallet extension when the **'eip6963:requestProvider'** event is fired.
+
+**EIP6963ProviderDetail** is the main object we're interested in here. It contains two important properties:
+**EIP6963ProviderInfo** which exposes metadata about the wallet extension;
+**EIP1193Provider** which is a provider interface from the [EIP-1193 specification](https://eips.ethereum.org/EIPS/eip-1193#appendix-i-consumer-facing-api-documentation). This should be used in the same way as the window.ethereum provider.
+
+
+With these elements set up, we're now ready to start building a basic implementation of EIP-6963 communication:
+
+```typescript
+export class InjectedWalletProvider {
+  // This will hold the details of the providers received
+  providerDetails: EIP6963ProviderDetail[];
+
+  ...
+
+  // This method listens for the 'announceProvider' event and processes the provider details announced
+  subscribe(): void {
+    window.addEventListener("eip6963:announceProvider", (event: EIP6963AnnounceProviderEvent) => {
+        this.log(`received 'announceProvider' emitted by ${event.detail.info.name} / ${event.detail.info.rdns}`);
+        this.providerReceived(event.detail);
+      }
+    );
+  }
+
+  // This method processes the provider details announced and adds them to the providerDetails array
+  private providerReceived(providerDetail: EIP6963ProviderDetail): void {
+    this.providerDetails.push(providerDetail);
+    this.log(`updated wallet provider details from '${providerDetail.info.name}' extension`);
+  }
+  
+  // This method is used to request wallet providers by firing a 'EIP6963RequestProviderEvent'
+  requestProviders(): void {
+    this.log("emitting 'requestProvider' event");
+    this.providerDetails = [];
+    window.dispatchEvent(new EIP6963RequestProviderEvent());
+  }
 }
 ```
 
-Now you can see all the events emitted by wallet extensions in your console:
+First we have to call `listenToAnnouncedProviders` that will set up an event listener for `eip6963:announceProvider` event.
+Next step is calling `requestProviders` to emit our request event.
+
+Finally, we can see our events in the console:
 
 ![001-events-in-console.png](docs/001-events-in-console.png)
 
