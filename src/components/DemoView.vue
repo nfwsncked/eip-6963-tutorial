@@ -18,7 +18,7 @@ const defaultProviderRdns = ref<string | null>(null);
 const currentAccountAddress = ref<string | null>(null);
 
 // Input value refs:
-//   sign signature 
+//   sign message 
 const signatureInputText = ref<string>('');
 const signatures = ref<string[]>([]);
 //   sign transaction
