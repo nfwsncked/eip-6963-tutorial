@@ -94,7 +94,7 @@ In these steps, you'll learn about the 'requestProvider' and 'announceProvider' 
 
 In these final steps, you'll see how your DApp can utilize connected wallet providers to sign transactions using their preferred wallet.
 
-### Steps 5: Wallet Persistence Handling
+### Step 5: Wallet Persistence Handling
 
 This step will guide you through saving a preferred wallet provider in localStorage for reuse, whether after refreshing the page or on your next visit. This introduces a fantastic new feature brought to you by [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963), offering your DApp users the freedom to connect with their chosen wallet, moving away from the constraints of only using the wallet provided by `window.ethereum`.
 
