@@ -414,7 +414,7 @@ async function sendTransaction(providerDetail: EIP6963ProviderDetail) {
     </div>
     <div class="space-y-4"><!-- Part 5: Save selected wallet as default using localStorage -->
       <h2 class="text-2xl font-extrabold">Step 5: Make Your Wallet the Default Choice</h2>
-      <p class="text-gray-500">Imagine you have a favorite wallet extension that you want to use every time you interact
+      <p class="text-gray-500">Bonus move: imagine you have a favorite wallet extension that you want to use every time you interact
         with this DApp. With <a href="https://eips.ethereum.org/EIPS/eip-6963"
           target="_blank"><strong>EIP-6963</strong></a>
         you finally can make this happen!</p>
