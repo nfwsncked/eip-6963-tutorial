@@ -290,10 +290,6 @@ async function sendTransaction(providerDetail: EIP6963ProviderDetail) {
         accounts you've already connected. So, all you'll need to do is call <code
           class="text-sky-800 text-s">eth_accounts</code>
         to retrieve them in the background.</p>
-      <p class="text-gray-500">If you refresh the page or come back later, your DApp will still have access to the
-        accounts you've already connected. So, all you'll need to do is call <code
-          class="text-sky-800 text-s">eth_accounts</code>
-        to retrieve them in the background.</p>
       <div v-if="availableProviderDetails.length" class="space-y-4">
         <div v-for="provider in availableProviderDetails" :key="provider.info.name"
           :class="{ 'bg-green-100': selectedProviderDetail && selectedProviderDetail.info.name === provider.info.name, 'bg-gray-100': !(selectedProviderDetail && selectedProviderDetail.info.name === provider.info.name) }"
@@ -452,11 +448,10 @@ async function sendTransaction(providerDetail: EIP6963ProviderDetail) {
       </div>
     </div>
     <div class="space-y-10">
-      <h2 class="text-2xl font-semibold">Thanks for completing the exploration, let's keep making the space better
-        together!</h2>
+      <h2 class="text-2xl font-semibold">Thanks for completing the exploration, continue to enhance this space together!</h2>
       <div class="bg-yellow-100 flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-4 rtl:space-x-reverse px-4 py-4">
         <p class="text-sm text-cyan-700 truncate dark:text-gray-400 font-extralight">
-          Get connected (:
+          Let's get connected (:
         </p>
         <div class="flex flex-wrap justify-center sm:block space-x-2 sm:space-x-4">
           <a href="https://twitter.com/nfwsncked" target="_blank"

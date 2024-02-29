@@ -24,9 +24,11 @@ By working together, it's possible to enhance the blockchain space, making it mo
 Get your hands on a ready-to-use **InjectedWalletProvider** setup right away. Simply add this file into your project, and you'll be all set to connect your DApp with [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) in a moment:
 
 <details>
-<summary>InjectedWalletProvider</summary>
+<summary>InjectedWalletProvider implementation</summary>
 
 [injected-wallet-provider.ts](src/injected-wallet-provider/injected-wallet-provider.ts)
+
+[types.ts](src/injected-wallet-provider/types.ts)
 
 </details>
 
@@ -36,35 +38,41 @@ Later in this tutorial, we'll construct this implementation step by step to give
 
 ## The Roadmap
 
-This guide will walk you through the process of implementing **[EIP-6963: Multi Injected Provider Discovery](https://eips.ethereum.org/EIPS/eip-6963)** from the ground up. It's broken down into a few easy-to-follow sections:
+This guide will take you step by step through the exciting journey of implementing **[EIP-6963: Multi Injected Provider Discovery](https://eips.ethereum.org/EIPS/eip-6963)** from scratch. It's organized into a series of straightforward sections:
 
-### 1. Connection Flow
+### 📖 Section 1: Requesting Available Providers
 
-This part will demystify the 'requestProvider' and 'announceProvider' events and how they work. It will give you a clear understanding of how DApps can kick-start connections with multiple injected wallet providers. Plus, it will share examples of these and related interfaces that are crucial for communicating with the wallets.
+Dive into the mechanics of 'requestProvider' and 'announceProvider' events and understand their roles. This section will clarify how DApps can initiate connections with multiple injected wallet providers and will provide examples of these and related interfaces essential for wallet communication.
 
-You can dive into the connection flow in steps 1-3 of the [interactive tutorial](https://eip-6963-tutorial.pages.dev/).
+Explore the connection flow in step 1 of the [interactive tutorial](https://main.eip-6963-tutorial.pages.dev/).
 
-### 2. Persistence Handling
+### 📖 Section 2: Connecting to Wallet Accounts
 
-This part will show you how the browser keeps a connection with the wallet alive even after a page refresh. It will also guide you on how to store a preferred wallet provider into localStorage for reuse after the page is refreshed. 
+This section will show you how to connect available provider wallets and how wallet extensions keep accounts connected after a page refresh or on next visit. 
 
-This is what makes [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) so special for your DApp users: now they have the freedom to connect with their preferred wallet, instead of being limited to the wallet available in `window.ethereum`.
+Discover why [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) is a game-changer for DApp users, offering them the freedom to connect with their wallet of choice, moving beyond the limitations of `window.ethereum`.
 
-You can get hands-on with persistence handling in steps 4-5 of the [interactive tutorial](https://eip-6963-tutorial.pages.dev/).
+Experiment with requesting accounts and ensuring they stay connected in step 2 of the [interactive tutorial](https://main.eip-6963-tutorial.pages.dev/).
 
-### 3. Message Signing and Sending a Transaction
+### 📖 Section 3: Message Signing and Sending a Transaction
 
-This part will demonstrate how your DApp can utilize connected wallet providers to sign transactions using their preferred wallet.
+Learn how your DApp can leverage connected wallet providers to sign transactions with the user's preferred wallet. This section is all about putting theory into practice.
 
-You can practice using an account to sign messages and send transactions in steps 6-7 of the [interactive tutorial](https://eip-6963-tutorial.pages.dev/).
+Get hands-on with account connection and transaction signing in steps 3-4 of the [interactive tutorial](https://main.eip-6963-tutorial.pages.dev/).
+
+### 📖 Section 4: 🗄️ Using localStorage for Persistence
+
+Understand the importance of persistence in maintaining a seamless user experience across DApp sessions. This section will guide you through the practical aspects of using localStorage to remember user preferences and wallet connections.
+
+See it in action in the step 5 of the [interactive tutorial](https://main.eip-6963-tutorial.pages.dev/).
 
 ---
 
 This tutorial will reference three key files from the repository:
 
-**// 📁 file:  [injected-wallet-provider.ts](src/injected-wallet-provider/injected-wallet-provider.ts)** — the core logic for the [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) implementation resides
+**// 📁 file:  [injected-wallet-provider.ts](src/injected-wallet-provider/injected-wallet-provider.ts)** — where the core logic for the [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) implementation resides
 
-**// 📁 file:  [provider-events.ts](src/injected-wallet-provider/types.ts)** — additional classes and interfaces that are essential for the InjectedWalletProvider to function
+**// 📁 file:  [types.ts](src/injected-wallet-provider/types.ts)** — additional classes and interfaces that are essential for the InjectedWalletProvider to function
 
 **// 📁 file:  [DemoView.vue](src/components/DemoView.vue)** — the demo page of the tutorial, it uses the InjectedWalletProvider to showcase how [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) operates
 
@@ -74,21 +82,21 @@ This tutorial will reference three key files from the repository:
 
 Ready to dive in? The interactive playground is all set up for you to try out everything you've learned in this guide. It's the perfect place to experience how [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) operates in a real-world setting.
 
-Just pop over to the [interactive playground](https://eip-6963-tutorial.pages.dev/) and let the exploration begin. It's a practical way to grasp how today's DApps can connect to a wallet using [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963).
+Just pop over to the [interactive playground](https://main.eip-6963-tutorial.pages.dev/) and let the exploration begin. It's a practical way to grasp how today's DApps can connect to a wallet using [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963).
 
-This guide is all about learning by doing. Let's walk through the steps you'll be taking in the [interactive tutorial](https://eip-6963-tutorial.pages.dev/) or on your local machine:
+This guide is all about learning by doing. Let's walk through the steps you'll be taking in the [interactive tutorial](https://main.eip-6963-tutorial.pages.dev/) or on your local machine:
 
-### Steps 1-3: Connection Flow
+### Steps 1-2: Connection Flow
 
 In these steps, you'll learn about the 'requestProvider' and 'announceProvider' events and how they work. You'll gain a clear understanding of how DApps can initiate connections with multiple injected wallet providers. You'll also see examples of these and related interfaces that are crucial for communicating with the wallets.
 
-### Steps 4-5: Persistence Handling
-
-These steps will show you how the browser keeps a connection with the wallet alive even after a page refresh. You'll also learn how to store a preferred wallet provider into localStorage for reuse after the page is refreshed. This is what makes [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) so special for your DApp users: now they have the freedom to connect with their preferred wallet, instead of being limited to the wallet available in `window.ethereum`.
-
-### Steps 6-7: Message Signing and Sending a Transaction
+### Steps 3-4: Message Signing and Sending a Transaction
 
 In these final steps, you'll see how your DApp can utilize connected wallet providers to sign transactions using their preferred wallet.
+
+### Steps 5: Wallet Persistence Handling
+
+This step will guide you through saving a preferred wallet provider in localStorage for reuse, whether after refreshing the page or on your next visit. This introduces a fantastic new feature brought to you by [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963), offering your DApp users the freedom to connect with their chosen wallet, moving away from the constraints of only using the wallet provided by `window.ethereum`.
 
 ---
 
@@ -134,7 +142,7 @@ http://localhost:5173/
 
 ---
 
-## 📖 Section 1: Connection Flow
+## 📖 Section 1: Requesting Available Providers
 
 Simplicity is the key to adoption. 
 
@@ -146,7 +154,7 @@ To see this interaction in action, let's add an event listener for `announceProv
 
 First let's define all the necessary classes and interfaces in one go:
 
-**// 📁 file:  [provider-events.ts](src/injected-wallet-provider/types.ts)**
+**// 📁 file:  [types.ts](src/injected-wallet-provider/types.ts)**
 ```typescript
 // Declare a global interface to extend the WindowEventMap with a custom event "eip6963:announceProvider"
 declare global {
@@ -267,7 +275,7 @@ Let's break down the data points we received (find full descriptions here: [EIP-
 
 **icon** — an encoded image that represents the wallet provider's logo
 
-> ❗ For security reasons you should always wrap received **icon** into <img> tag
+> ❗ For security reasons you should always wrap received **icon** into `<img>` tag
 
 **rdns** — a unique identifier provided by the wallet in the form of a reversed domain name (like com.example.subdomain). It's expected to stay the same throughout the wallet's lifespan, providing a stable identifier for DApps to rely on across sessions. 
 
@@ -306,7 +314,7 @@ await provider.request({method: 'eth_accounts'})
 await provider.request({method: 'personal_sign', params: ['some message to sign', '0x0000000000000000000000000000000000000000']});
 ```
 
-## 📖 Section 2: Persistence Handling
+## 📖 Section 2: Connecting to Wallet Accounts
 
 When you want to access Ethereum accounts, you can use either `eth_requestAccounts` or `eth_accounts`. 
 
@@ -346,38 +354,12 @@ To get accounts previously connected via `eth_requestAccounts`, we should use me
 
 **// 📁 file:  [DemoView.vue](src/components/DemoView.vue)**
 ```typescript
-async function getConnectedWalletAccounts(providerDetail: EIP6963ProviderDetail) {
+async function getConnectedWalletAccount(providerDetail: EIP6963ProviderDetail) {
   const accounts = await providerDetail.provider.request({ method: 'eth_accounts' })
   if (accounts) {
     setCurrentWalletAccount(accounts[0])
   }
 }
-```
-
-### 🗄️ Using localStorage for persistence
-
-Thanks to [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963), it's now possible to use multiple wallet extensions at the same time. This opens up a scenario where you might want to stick with the same wallet extension every time you use this DApp. To make this happen, we can save your choice in localStorage using the RDNS value of the chosen extension. Just a quick reminder, the RDNS parameter is a unique identifier that each wallet extension provides.
-
-**// 📁 file:  [injected-wallet-provider.ts](src/injected-wallet-provider/injected-wallet-provider.ts)**
-```typescript
-  // This function stores the default provider.info.rdns in the local storage
-  storeDefaultProviderRdns(providerRdns: string) {
-    window.localStorage.setItem(defaultProviderLocalStorageName, providerRdns);
-    this.log(`stored default provider rdns '${providerRdns}' in local storage.`);
-  }
-
-  // This function retrieves the default provider.info.rdns from the local storage
-  readDefaultProviderRdns(): string | null {
-    const providerRdns = window.localStorage.getItem(defaultProviderLocalStorageName);
-    this.log(`read default provider rdns '${providerRdns}' from local storage.`);
-    return providerRdns;
-  }
-
-  // This function removes the default provider.info.rdns from the local storage
-  removeDefaultProvider() {
-    window.localStorage.removeItem(defaultProviderLocalStorageName);
-    this.log("removed default provider rdns from local storage");
-  }
 ```
 
 ## 📖 Section 3: Message Signing and Sending a Transaction
@@ -424,4 +406,30 @@ async function sendTransaction(providerDetail: EIP6963ProviderDetail) {
     console.error(`error sending transaction: ${error}`);
   }
 }
+```
+
+## 📖 Section 4: 🗄️ Using localStorage for persistence
+
+Thanks to [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963), it's now possible to use multiple wallet extensions at the same time. This opens up a scenario where you might want to stick with the same wallet extension every time you use this DApp. To make this happen, we can save your choice in localStorage using the RDNS value of the chosen extension. Just a quick reminder, the RDNS parameter is a unique identifier that each wallet extension provides.
+
+**// 📁 file:  [injected-wallet-provider.ts](src/injected-wallet-provider/injected-wallet-provider.ts)**
+```typescript
+  // This function stores the default provider.info.rdns in the local storage
+  storeDefaultProviderRdns(providerRdns: string) {
+    window.localStorage.setItem(defaultProviderLocalStorageName, providerRdns);
+    this.log(`stored default provider rdns '${providerRdns}' in local storage.`);
+  }
+
+  // This function retrieves the default provider.info.rdns from the local storage
+  readDefaultProviderRdns(): string | null {
+    const providerRdns = window.localStorage.getItem(defaultProviderLocalStorageName);
+    this.log(`read default provider rdns '${providerRdns}' from local storage.`);
+    return providerRdns;
+  }
+
+  // This function removes the default provider.info.rdns from the local storage
+  removeDefaultProvider() {
+    window.localStorage.removeItem(defaultProviderLocalStorageName);
+    this.log("removed default provider rdns from local storage");
+  }
 ```
