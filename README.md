@@ -64,7 +64,7 @@ This tutorial will reference three key files from the repository:
 
 **// 📁 file:  [injected-wallet-provider.ts](src/injected-wallet-provider/injected-wallet-provider.ts)** — the core logic for the [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) implementation resides
 
-**// 📁 file:  [provider-events.ts](src/injected-wallet-provider/provider-events.ts)** — additional classes and interfaces that are essential for the InjectedWalletProvider to function
+**// 📁 file:  [provider-events.ts](src/injected-wallet-provider/types.ts)** — additional classes and interfaces that are essential for the InjectedWalletProvider to function
 
 **// 📁 file:  [DemoView.vue](src/components/DemoView.vue)** — the demo page of the tutorial, it uses the InjectedWalletProvider to showcase how [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) operates
 
@@ -146,7 +146,7 @@ To see this interaction in action, let's add an event listener for `announceProv
 
 First let's define all the necessary classes and interfaces in one go:
 
-**// 📁 file:  [provider-events.ts](src/injected-wallet-provider/provider-events.ts)**
+**// 📁 file:  [provider-events.ts](src/injected-wallet-provider/types.ts)**
 ```typescript
 // Declare a global interface to extend the WindowEventMap with a custom event "eip6963:announceProvider"
 declare global {
@@ -346,7 +346,7 @@ To get accounts previously connected via `eth_requestAccounts`, we should use me
 
 **// 📁 file:  [DemoView.vue](src/components/DemoView.vue)**
 ```typescript
-async function getConnectedWalletAccount(providerDetail: EIP6963ProviderDetail) {
+async function getConnectedWalletAccounts(providerDetail: EIP6963ProviderDetail) {
   const accounts = await providerDetail.provider.request({ method: 'eth_accounts' })
   if (accounts) {
     setCurrentWalletAccount(accounts[0])

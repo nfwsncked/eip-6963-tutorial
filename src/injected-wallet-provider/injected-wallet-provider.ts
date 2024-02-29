@@ -1,5 +1,5 @@
-import type { EIP6963ProviderDetail, EIP6963AnnounceProviderEvent } from "./provider-events";
-import { EIP6963RequestProviderEvent } from "./provider-events";
+import type { EIP6963ProviderDetail, EIP6963AnnounceProviderEvent } from "./types";
+import { EIP6963RequestProviderEvent } from "./types";
 import { EventEmitter } from "eventemitter3";
 
 const defaultProviderLocalStorageName = 'dAppDefaultWalletProviderRdns';
