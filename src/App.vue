@@ -25,3 +25,13 @@ import DemoView from './components/DemoView.vue'
     </div>
   </div>
 </template>
+
+<style>
+@media (max-width: 640px) {
+  body {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+</style>

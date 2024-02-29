@@ -228,7 +228,7 @@ async function sendTransaction(providerDetail: EIP6963ProviderDetail) {
             class="text-sky-800 text-s">announceProvider</code> event yet. Let's get it rolling!</p>
         <p class="text-gray-500">Click <strong>'Request Providers'</strong> to ask your browser what's installed</p>
         <div v-if="noProvidersAvailableAfterRequest"
-          class="flex items-center space-x-4 rtl:space-x-reverse max-w-ld bg-red-50 px-4 min-h-[8rem]">
+          class="flex items-center justify-center space-x-4 rtl:space-x-reverse max-w-ld bg-red-50 px-4 min-h-[8rem]">
           <p class="text-gray-500">No EIP-6963 providers found in your browser :(</p>
         </div>
         <div v-else
@@ -238,7 +238,7 @@ async function sendTransaction(providerDetail: EIP6963ProviderDetail) {
       </div>
       <h2 class="text-l font-extrabold">Get to Know Your Provider Metadata</h2>
       <p class="text-gray-500">Let's dive into the details of the provider you've chosen. If you've selected one, you'll
-        find contents of <code class="text-sky-800 text-s">'EIP6963AnnounceProviderEvent.detail.info'</code> in the box
+        find contents of announced provider's <code class="text-sky-800 text-s">detail.info</code> in the box
         below:</p>
       <div v-if="selectedProviderDetail" class="bg-green-50 flex items-center space-x-4 rtl:space-x-reverse px-4 py-4">
         <div class="flex-shrink-0">
@@ -417,7 +417,7 @@ async function sendTransaction(providerDetail: EIP6963ProviderDetail) {
       </div>
     </div>
     <div class="space-y-4"><!-- Part 5: Save selected wallet as default using localStorage -->
-      <h2 class="text-2xl font-extrabold">Step 4: Make Your Wallet the Default Choice</h2>
+      <h2 class="text-2xl font-extrabold">Step 5: Make Your Wallet the Default Choice</h2>
       <p class="text-gray-500">Imagine you have a favorite wallet extension that you want to use every time you interact
         with this DApp. With <a href="https://eips.ethereum.org/EIPS/eip-6963"
           target="_blank"><strong>EIP-6963</strong></a>
@@ -454,17 +454,17 @@ async function sendTransaction(providerDetail: EIP6963ProviderDetail) {
     <div class="space-y-10">
       <h2 class="text-2xl font-semibold">Thanks for completing the exploration, let's keep making the space better
         together!</h2>
-      <div class="bg-yellow-100 flex justify-center items-center space-x-4 rtl:space-x-reverse px-4 py-4">
+      <div class="bg-yellow-100 flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-4 rtl:space-x-reverse px-4 py-4">
         <p class="text-sm text-cyan-700 truncate dark:text-gray-400 font-extralight">
-          Get connected:
+          Get connected (:
         </p>
-        <div class="flex space-x-4">
+        <div class="flex flex-wrap justify-center sm:block space-x-2 sm:space-x-4">
           <a href="https://twitter.com/nfwsncked" target="_blank"
-            class="text-sky-700 hover:text-red-300 font-semibold">Twitter</a>
+            class="text-sky-700 hover:text-red-300 font-semibold mb-2 sm:mb-0">Twitter</a>
           <a href="https://warpcast.com/nfwsncked" target="_blank"
-            class="text-sky-700 hover:text-red-300 font-semibold">Farcaster</a>
+            class="text-sky-700 hover:text-red-300 font-semibold mb-2 sm:mb-0">Farcaster</a>
           <a href="https://discord.com/users/nfwsncked" target="_blank"
-            class="text-sky-700 hover:text-red-300 font-semibold">Discord</a>
+            class="text-sky-700 hover:text-red-300 font-semibold mb-2 sm:mb-0">Discord</a>
           <a href="https://github.com/nfwsncked" target="_blank"
             class="text-sky-700 hover:text-red-300 font-semibold">GitHub</a>
         </div>
