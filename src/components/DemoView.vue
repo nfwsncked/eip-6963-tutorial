@@ -447,7 +447,31 @@ async function sendTransaction(providerDetail: EIP6963ProviderDetail) {
         <p class="text-gray-500">No provider selected yet</p>
       </div>
     </div>
-    <div class="space-y-10">
+    <div class="space-y-5">
+      <h2 class="text-xl font-extrabold">Existing libraries to help your DApp</h2>
+      <p class="text-gray-500">Consider looking into existing libraries that already support EIP-6963 to help your DApp kick off:</p>
+      <ul class="list-disc pl-5 space-y-2 flex flex-col">
+        <li class="flex items-center space-x-2">
+          <img src="https://avatars.githubusercontent.com/u/109633172?s=12&v=4" alt="wagmi logo" class="inline">
+          <span><a href="https://github.com/wevm/wagmi" class="text-sky-700 hover:text-red-300 font-semibold">wagmi</a> / <a href="https://github.com/wevm/mipd" class="text-sky-700 hover:text-red-300 font-semibold">mipd</a></span>
+        </li>
+        <li class="flex items-center space-x-2">
+          <img src="https://avatars.githubusercontent.com/u/48327834?s=12&v=4" alt="rainbowkit logo" class="inline">
+          <a href="https://github.com/rainbow-me/rainbowkit" class="text-sky-700 hover:text-red-300 font-semibold">rainbowkit</a>
+        </li>
+        <li class="flex items-center space-x-2">
+          <img src="https://avatars.githubusercontent.com/u/37784886?s=12&v=4" alt="web3modal logo" class="inline">
+          <a href="https://github.com/WalletConnect/web3modal" class="text-sky-700 hover:text-red-300 font-semibold">web3modal</a>
+        </li>
+        <li class="flex items-center space-x-2">
+          <img src="https://avatars.githubusercontent.com/u/110182765?s=12&v=4" alt="connectkit logo" class="inline">
+          <a href="https://github.com/family/connectkit" class="text-sky-700 hover:text-red-300 font-semibold">connectkit</a>
+        </li>
+        <li class="flex items-center space-x-2">
+          <img src="https://avatars.githubusercontent.com/u/40773874?s=12&v=4" alt="web3-onboard logo" class="inline">
+          <a href="https://github.com/blocknative/web3-onboard" class="text-sky-700 hover:text-red-300 font-semibold">web3-onboard</a>
+        </li>
+      </ul>
       <h2 class="text-2xl font-semibold">Thanks for completing the exploration, continue to enhance this space together!</h2>
       <div class="bg-yellow-100 flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-4 rtl:space-x-reverse px-4 py-4">
         <p class="text-sm text-cyan-700 truncate dark:text-gray-400 font-extralight">
