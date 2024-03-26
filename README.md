@@ -43,6 +43,7 @@ If you are already using one of them — consider updating to the latest version
 - ![web3modal](https://avatars.githubusercontent.com/u/37784886?s=12&v=4) [web3modal](https://github.com/WalletConnect/web3modal)
 - ![connectkit](https://avatars.githubusercontent.com/u/110182765?s=12&v=4) [connectkit](https://github.com/family/connectkit)
 - ![web3-onboard](https://avatars.githubusercontent.com/u/40773874?s=12&v=4) [web3-onboard](https://github.com/blocknative/web3-onboard)
+- ![@ant-design/web3](https://avatars.githubusercontent.com/u/12101536?s=12&v=4) [@ant-design/web3](https://github.com/ant-design/ant-design-web3)
 
 ---
 
